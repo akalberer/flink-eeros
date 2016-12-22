@@ -5,9 +5,9 @@
 using namespace flink;
 using namespace eeros::hal;
 
-DigIn::DigIn(std::string id, std::string device, uint32_t subDeviceNumber, uint32_t channel, bool inverted): Input<bool>(id) ,channel(channel), inverted(inverted){
+DigIn::DigIn(std::string id, std::string device, uint32_t uniqueId, uint32_t channel, bool inverted): Input<bool>(id) ,channel(channel), inverted(inverted){
 	FlinkDevice *dev = FlinkDevice::getDevice(device);
-	this->subdeviceHandle = flink_get_subdevice_by_id(dev->getDeviceHandle(), subDeviceNumber);
+	this->subdeviceHandle = flink_get_subdevice_by_unique_id(dev->getDeviceHandle(), uniqueId);
 	
 	flink_dio_set_direction(subdeviceHandle, channel, FLINK_INPUT);
 }
@@ -21,6 +21,6 @@ bool DigIn::get(){
 	return value;
 }
 
-extern "C" eeros::hal::Input<bool> *createDigIn(std::string id, std::string device, uint32_t subDeviceNumber, uint32_t channel, bool inverted){
-	return new flink::DigIn(id, device, subDeviceNumber, channel, inverted);
+extern "C" eeros::hal::Input<bool> *createDigIn(std::string id, std::string device, uint32_t uniqueId, uint32_t channel, bool inverted){
+	return new flink::DigIn(id, device, uniqueId, channel, inverted);
 }

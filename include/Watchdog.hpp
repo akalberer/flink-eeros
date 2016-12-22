@@ -9,7 +9,7 @@
 namespace flink {
 	class Watchdog : public eeros::hal::Output<bool> {
 	public:
-		Watchdog(std::string id, void *libHandle, std::string device, uint32_t subDeviceNumber, uint32_t channel, double timeout = 0.05);
+		Watchdog(std::string id, void *libHandle, std::string device, uint32_t uniqueId, uint32_t channel, double timeout = 0.05);
 		
 		virtual bool get();
 		virtual void set(bool b);
@@ -25,7 +25,7 @@ namespace flink {
 };
 
 extern "C"{
-	eeros::hal::Output<bool> *createWatchdog(std::string id, void* libHandle, std::string device, uint32_t subDeviceNumber, uint32_t channel, double timeout);
+	eeros::hal::Output<bool> *createWatchdog(std::string id, void* libHandle, std::string device, uint32_t uniqueId, uint32_t channel, double timeout);
 	void resetWatchdog(flink::Watchdog *obj);
 	void setWatchdogTimeout(flink::Watchdog *obj, double t);
 }

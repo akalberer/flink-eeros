@@ -4,10 +4,10 @@
 using namespace flink;
 using namespace eeros::hal;
 
-AnalogOut::AnalogOut(std::string id, void* libHandle, std::string device, uint32_t subDeviceNumber, uint32_t channel, double scale, double offset, double rangeMin, double rangeMax, std::string unit) : ScalableOutput<double>(id, libHandle, scale, offset, rangeMin, rangeMax, unit), channel(channel), bitMask(0) {
+AnalogOut::AnalogOut(std::string id, void* libHandle, std::string device, uint32_t uniqueId, uint32_t channel, double scale, double offset, double rangeMin, double rangeMax, std::string unit) : ScalableOutput<double>(id, libHandle, scale, offset, rangeMin, rangeMax, unit), channel(channel), bitMask(0) {
   
 	FlinkDevice *dev = FlinkDevice::getDevice(device);
-	this->subdeviceHandle = flink_get_subdevice_by_id(dev->getDeviceHandle(), subDeviceNumber);
+	this->subdeviceHandle = flink_get_subdevice_by_unique_id(dev->getDeviceHandle(), uniqueId);
 	
 	flink_analog_out_get_resolution(subdeviceHandle, &resolution);
 	bitMask = (1 << resolution) - 1;
@@ -43,8 +43,8 @@ void AnalogOut::set(double voltage) {
 }
 
 extern "C"{
-	eeros::hal::ScalableOutput<double> *createAnalogOut(std::string id, void *libHandle, std::string device, uint32_t subDeviceNumber, uint32_t channel, double scale, double offset, double rangeMin, double rangeMax, std::string unit){
-		return new flink::AnalogOut(id, libHandle, device, subDeviceNumber, channel, scale, offset, rangeMin, rangeMax, unit);
+	eeros::hal::ScalableOutput<double> *createAnalogOut(std::string id, void *libHandle, std::string device, uint32_t uniqueId, uint32_t channel, double scale, double offset, double rangeMin, double rangeMax, std::string unit){
+		return new flink::AnalogOut(id, libHandle, device, uniqueId, channel, scale, offset, rangeMin, rangeMax, unit);
 	}
 }
 
